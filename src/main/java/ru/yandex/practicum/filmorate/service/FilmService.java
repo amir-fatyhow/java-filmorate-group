@@ -78,4 +78,8 @@ public class FilmService {
     public List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year) {
         return filmStorage.getPopularFilmsByGenreAndYear(count, genreId, year);
     }
+
+    public Collection<Film> getCommonFilms(int userId, int friendId) {
+        return filmStorage.getCommonFilms(userId, friendId);
+    }
 }

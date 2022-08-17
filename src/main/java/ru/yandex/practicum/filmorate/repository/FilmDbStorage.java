@@ -193,6 +193,18 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    @Override
+    public Collection<Film> getCommonFilms(int userId, int friendId) {
+        String sql = "SELECT * FROM FILMS AS F JOIN MPA ON F.MPA_ID=MPA.ID LEFT JOIN LIKES L " +
+                "ON F.ID = L.FILM_ID LEFT JOIN FILMS_GENRES AS FG ON F.ID = FG.FILM_ID WHERE L.USER_ID = ? " +
+                "AND F.ID IN (SELECT LIKES.FILM_ID FROM LIKES WHERE USER_ID = ?) " +
+                "GROUP BY F.ID, " +
+                "L.USER_ID ORDER BY COUNT(USER_ID) DESC LIMIT ?";
+
+        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage
+                , likesDbStorage, directorDbStorage),  friendId, userId, 10);
+    }
+
     public void setFilmGenres(long filmId, List<Genre> genres) throws FilmNotFound {
         String sqlCheck = "SELECT COUNT(*) FROM FILMS_GENRES WHERE FILM_ID = ?";
         Integer check = jdbcTemplate.queryForObject(sqlCheck, Integer.class, filmId);

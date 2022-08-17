@@ -41,4 +41,6 @@ public interface FilmStorage {
     List<Film> getPopularFilmsByYear(String year);
 
     List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year);
+
+    Collection<Film> getCommonFilms(int userId, int friendId);
 }

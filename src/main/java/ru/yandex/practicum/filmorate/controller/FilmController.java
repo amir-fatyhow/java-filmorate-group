@@ -73,11 +73,20 @@ public class FilmController {
     }
 
     /**
-     * Получаем Film по популярности(количеству like)
+     * Получаем Film по популярности(количеству like) по жанру и годам
      */
     @GetMapping("/popular")
-    public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "0") int count) {
-        return ResponseEntity.ok(filmService.getPopularFilms(count));
+    public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "0") int count
+            ,@RequestParam(defaultValue = "0") int genreId, @RequestParam(required = false) String year) {
+        if (genreId == 0 && year == null) {
+            return ResponseEntity.ok(filmService.getPopularFilms(count));
+        } else if (genreId != 0 && year == null) {
+            return ResponseEntity.ok(filmService.getPopularByGenre(genreId));
+        } else if (genreId == 0){
+            return ResponseEntity.ok(filmService.getPopularFilmsByYear(year));
+        } else {
+            return ResponseEntity.ok(filmService.getPopularFilmsByGenreAndYear(count, genreId, year));
+        }
     }
 
     /**

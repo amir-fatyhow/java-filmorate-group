@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -64,5 +65,17 @@ public class FilmService {
 
     public Collection<Film> getSearchFilmsByDirector(String query) {
         return filmStorage.getSearchFilmsByDirector(query);
+    }
+
+    public List<Film> getPopularByGenre(int genreId) {
+        return filmStorage.getPopularByGenre(genreId);
+    }
+
+    public List<Film> getPopularFilmsByYear(String year) {
+        return filmStorage.getPopularFilmsByYear(year);
+    }
+
+    public List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year) {
+        return filmStorage.getPopularFilmsByGenreAndYear(count, genreId, year);
     }
 }

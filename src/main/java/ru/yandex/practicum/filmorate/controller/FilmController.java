@@ -16,7 +16,9 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.LikesService;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @Slf4j
@@ -121,5 +123,20 @@ public class FilmController {
     @GetMapping("/director/{directorId}")
     public List<Film> getAllFilmsByDirectorSortByYearOrLikes(@PathVariable int directorId, @RequestParam String sortBy) {
         return filmService.getAllFilmsByDirector(directorId, sortBy);
+    }
+
+    /**
+     * Поиск Film по названию и режиссёру
+     * */
+    @GetMapping("/search")
+    public Collection<Film> getSearchFilms(@RequestParam String query, @RequestParam(required = false) String by) {
+        if (Objects.equals(by, "title,director") || Objects.equals(by, "director,title")) {
+            return filmService.getSearchFilmsByTittleAndDirector(query);
+        } else if ( Objects.equals(by, "title")) {
+            return filmService.getSearchFilmsByTittle(query);
+        } else if (Objects.equals(by, "director")){
+            return filmService.getSearchFilmsByDirector(query);
+        }
+        return null;
     }
 }

@@ -106,9 +106,6 @@ public class UserController {
         return new ResponseEntity<>(friendService.getAllCommonFriends(userId, friendId), HttpStatus.OK);
     }
 
-    /**
-     * Получить все Event для User по id
-     */
     @GetMapping("/{id}/feed")
     public List<Event> getAllEvents(@PathVariable long id) {
         return eventService.getAllEvents(id);

@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.repository.MpaDbStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 @Data
@@ -42,8 +43,14 @@ public class FilmRowMapper implements RowMapper<Film> {
         film.setReleaseDate(rs.getDate("RELEASE_DATE").toLocalDate());
         film.setRate(likesDbStorage.getLikesCount(rs.getLong("ID")));
         film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
-        film.setDirectors(directorDbStorage.getDirectorsByFilmId(film.getId()));
+
+
+
+        List<Director> directors = directorDbStorage.getDirectorsByFilmId(film.getId());
+        film.setDirectors(directors);
+        /*if (directors.size() == 0) {
+            film.setDirectors(directors);
+        }*/
         return film;
     }
-
 }

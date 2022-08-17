@@ -2,12 +2,12 @@ package ru.yandex.practicum.filmorate.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.DirectorNotFound;
-import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
 import ru.yandex.practicum.filmorate.mapper.DirectorRowMapper;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
@@ -69,10 +69,10 @@ public class DirectorDbStorage implements DirectorStorage {
         jdbcTemplate.update(sql, id);
     }
 
-    public List<Director> getDirectorsByFilmId(long id) throws FilmNotFound {
+    public List<Director> getDirectorsByFilmId(long id) {
         String sql = "SELECT * FROM DIRECTORS WHERE ID IN " +
                 "(SELECT DIRECTOR_ID FROM FILMS_DIRECTORS WHERE FILM_ID = ?)";
-        return jdbcTemplate.query(sql, new DirectorRowMapper(), id);
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Director.class), id);
     }
 
 }

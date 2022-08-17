@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -53,4 +54,15 @@ public class FilmService {
         return filmStorage.getAllFilmsByDirector(directorId, sortBy);
     }
 
+    public Collection<Film> getSearchFilmsByTittleAndDirector(String query) {
+        return filmStorage.getSearchFilmsByTittleAndDirector(query);
+    }
+
+    public Collection<Film> getSearchFilmsByTittle(String query) {
+        return filmStorage.getSearchFilmsByTittle(query);
+    }
+
+    public Collection<Film> getSearchFilmsByDirector(String query) {
+        return filmStorage.getSearchFilmsByDirector(query);
+    }
 }

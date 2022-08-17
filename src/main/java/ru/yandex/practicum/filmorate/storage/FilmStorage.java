@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -34,4 +35,10 @@ public interface FilmStorage {
     Collection<Film> getSearchFilmsByTittle(String query);
 
     Collection<Film> getSearchFilmsByDirector(String query);
+
+    List<Film> getPopularByGenre(int genreId);
+
+    List<Film> getPopularFilmsByYear(String year);
+
+    List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year);
 }

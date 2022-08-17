@@ -43,14 +43,7 @@ public class FilmRowMapper implements RowMapper<Film> {
         film.setReleaseDate(rs.getDate("RELEASE_DATE").toLocalDate());
         film.setRate(likesDbStorage.getLikesCount(rs.getLong("ID")));
         film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
-
-
-
-        List<Director> directors = directorDbStorage.getDirectorsByFilmId(film.getId());
-        film.setDirectors(directors);
-        /*if (directors.size() == 0) {
-            film.setDirectors(directors);
-        }*/
+        film.setDirectors(directorDbStorage.getDirectorsByFilmId(film.getId()));
         return film;
     }
 }

@@ -108,11 +108,6 @@ public class FilmDbStorage implements FilmStorage {
         );
         setFilmGenres(film.getId(), film.getGenres());
         setFilmDirectors(film.getId(), film.getDirectors());
-
-        List<Director> directors = film.getDirectors();
-        if (directors.isEmpty()) {
-            film.setDirectors(null);
-        }
         return film;
     }
 

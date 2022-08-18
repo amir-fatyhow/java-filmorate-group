@@ -39,8 +39,16 @@ public class FilmService {
         filmStorage.deleteFilm(filmId);
     }
 
-    public List<Film> getPopularFilms(int count) {
-        return filmStorage.getPopularFilms(count);
+    public List<Film> getPopularFilms(int count, int genreId, String year) {
+        if (genreId == 0 && year == null) {
+            return filmStorage.getPopularFilms(count);
+        } else if (genreId != 0 && year == null) {
+            return filmStorage.getPopularByGenre(genreId);
+        } else if (genreId == 0){
+            return filmStorage.getPopularFilmsByYear(year);
+        } else {
+            return filmStorage.getPopularFilmsByGenreAndYear(count, genreId, year);
+        }
     }
 
     public void setFilmGenres(long filmId, List<Genre> genres) {
@@ -65,18 +73,6 @@ public class FilmService {
 
     public Collection<Film> getSearchFilmsByDirector(String query) {
         return filmStorage.getSearchFilmsByDirector(query);
-    }
-
-    public List<Film> getPopularByGenre(int genreId) {
-        return filmStorage.getPopularByGenre(genreId);
-    }
-
-    public List<Film> getPopularFilmsByYear(String year) {
-        return filmStorage.getPopularFilmsByYear(year);
-    }
-
-    public List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year) {
-        return filmStorage.getPopularFilmsByGenreAndYear(count, genreId, year);
     }
 
     public Collection<Film> getCommonFilms(int userId, int friendId) {

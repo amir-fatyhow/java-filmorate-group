@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -63,19 +64,18 @@ public class FilmService {
         return filmStorage.getAllFilmsByDirector(directorId, sortBy);
     }
 
-    public Collection<Film> getSearchFilmsByTittleAndDirector(String query) {
-        return filmStorage.getSearchFilmsByTittleAndDirector(query);
-    }
-
-    public Collection<Film> getSearchFilmsByTittle(String query) {
-        return filmStorage.getSearchFilmsByTittle(query);
-    }
-
-    public Collection<Film> getSearchFilmsByDirector(String query) {
-        return filmStorage.getSearchFilmsByDirector(query);
-    }
-
     public Collection<Film> getCommonFilms(int userId, int friendId) {
         return filmStorage.getCommonFilms(userId, friendId);
+    }
+
+    public Collection<Film> getSearchFilms(String query,String by) {
+        if (Objects.equals(by, "title,director") || Objects.equals(by, "director,title")) {
+            return filmStorage.getSearchFilmsByTittleAndDirector(query);
+        } else if ( Objects.equals(by, "title")) {
+            return filmStorage.getSearchFilmsByTittle(query);
+        } else if (Objects.equals(by, "director")){
+            return filmStorage.getSearchFilmsByDirector(query);
+        }
+        return null;
     }
 }

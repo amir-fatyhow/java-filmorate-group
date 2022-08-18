@@ -76,8 +76,9 @@ public class FilmController {
      * Получаем Film по популярности(количеству like) по жанру и годам
      */
     @GetMapping("/popular")
-    public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "0") int count
-            ,@RequestParam(defaultValue = "0") int genreId, @RequestParam(required = false) String year) {
+    public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "0") int count,
+                                                      @RequestParam(defaultValue = "0") int genreId,
+                                                      @RequestParam(required = false) String year) {
        return ResponseEntity.ok(filmService.getPopularFilms(count, genreId, year));
     }
 
@@ -139,13 +140,6 @@ public class FilmController {
      * */
     @GetMapping("/search")
     public Collection<Film> getSearchFilms(@RequestParam String query, @RequestParam(required = false) String by) {
-        if (Objects.equals(by, "title,director") || Objects.equals(by, "director,title")) {
-            return filmService.getSearchFilmsByTittleAndDirector(query);
-        } else if ( Objects.equals(by, "title")) {
-            return filmService.getSearchFilmsByTittle(query);
-        } else if (Objects.equals(by, "director")){
-            return filmService.getSearchFilmsByDirector(query);
-        }
-        return null;
+        return filmService.getSearchFilms(query, by);
     }
 }

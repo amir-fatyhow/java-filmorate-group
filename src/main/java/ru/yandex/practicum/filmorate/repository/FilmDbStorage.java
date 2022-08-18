@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -108,9 +109,6 @@ public class FilmDbStorage implements FilmStorage {
         setFilmGenres(film.getId(), film.getGenres());
         setFilmDirectors(film.getId(), film.getDirectors());
 
-        /**
-         * Добавленный кода для прохождения add-search теста Film update remove director
-         * */
         List<Director> directors = film.getDirectors();
         if (directors.isEmpty()) {
             film.setDirectors(null);
@@ -146,6 +144,65 @@ public class FilmDbStorage implements FilmStorage {
         } else {
             return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), 10);
         }
+    }
+
+    @Override
+    public List<Film> getPopularByGenre(int genreId) {
+        String sql = "SELECT TOP ? * FROM FILMS " +
+                "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
+                "LEFT JOIN LIKES L ON FILMS.ID = L.FILM_ID LEFT JOIN FILMS_GENRES AS FG ON FILMS.ID = FG.FILM_ID " +
+                "WHERE FG.GENRE_ID = ? " +
+                "GROUP BY FILMS.ID, " +
+                "L.USER_ID " +
+                "ORDER BY COUNT(USER_ID) DESC";
+        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), 10, genreId);
+    }
+
+    @Override
+    public List<Film> getPopularFilmsByYear(String year) {
+        String sql = "SELECT TOP ? * FROM FILMS " +
+                "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
+                "LEFT JOIN LIKES L ON FILMS.ID = L.FILM_ID WHERE  (RELEASE_DATE BETWEEN ? AND ?) " +
+                "GROUP BY FILMS.ID, " +
+                "L.USER_ID " +
+                "ORDER BY COUNT(USER_ID) DESC";
+        String firstBoundOfDate = Integer.parseInt(year) - 1 + "-12-31";
+        String secondBoundOfDate = Integer.parseInt(year) + 1 + "-01-01";
+        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage
+                , likesDbStorage, directorDbStorage), 10, firstBoundOfDate, secondBoundOfDate);
+
+    }
+
+    @Override
+    public List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year) {
+        String sql = "SELECT TOP ? * FROM FILMS " +
+                "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
+                "LEFT JOIN LIKES L ON FILMS.ID = L.FILM_ID LEFT JOIN FILMS_GENRES AS FG ON FILMS.ID = FG.FILM_ID " +
+                "WHERE  (RELEASE_DATE BETWEEN ? AND ?) AND FG.GENRE_ID = ?" +
+                "GROUP BY FILMS.ID, " +
+                "L.USER_ID " +
+                "ORDER BY COUNT(USER_ID) DESC";
+        String firstBoundOfDate = Integer.parseInt(year) - 1 + "-12-31";
+        String secondBoundOfDate = Integer.parseInt(year) + 1 + "-01-01";
+        if (count != 0) {
+            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage
+                    , likesDbStorage, directorDbStorage), count, firstBoundOfDate, secondBoundOfDate, genreId);
+        } else {
+            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage
+                    , likesDbStorage, directorDbStorage), 10, firstBoundOfDate, secondBoundOfDate, genreId);
+        }
+    }
+
+    @Override
+    public Collection<Film> getCommonFilms(int userId, int friendId) {
+        String sql = "SELECT * FROM FILMS AS F JOIN MPA ON F.MPA_ID=MPA.ID LEFT JOIN LIKES L " +
+                "ON F.ID = L.FILM_ID LEFT JOIN FILMS_GENRES AS FG ON F.ID = FG.FILM_ID WHERE L.USER_ID = ? " +
+                "AND F.ID IN (SELECT LIKES.FILM_ID FROM LIKES WHERE USER_ID = ?) " +
+                "GROUP BY F.ID, " +
+                "L.USER_ID ORDER BY COUNT(USER_ID) DESC LIMIT ?";
+
+        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage
+                , likesDbStorage, directorDbStorage),  friendId, userId, 10);
     }
 
     public void setFilmGenres(long filmId, List<Genre> genres) throws FilmNotFound {

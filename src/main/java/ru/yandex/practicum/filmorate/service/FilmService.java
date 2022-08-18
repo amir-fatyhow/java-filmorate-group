@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -38,8 +39,16 @@ public class FilmService {
         filmStorage.deleteFilm(filmId);
     }
 
-    public List<Film> getPopularFilms(int count) {
-        return filmStorage.getPopularFilms(count);
+    public List<Film> getPopularFilms(int count, int genreId, String year) {
+        if (genreId == 0 && year == null) {
+            return filmStorage.getPopularFilms(count);
+        } else if (genreId != 0 && year == null) {
+            return filmStorage.getPopularByGenre(genreId);
+        } else if (genreId == 0){
+            return filmStorage.getPopularFilmsByYear(year);
+        } else {
+            return filmStorage.getPopularFilmsByGenreAndYear(count, genreId, year);
+        }
     }
 
     public void setFilmGenres(long filmId, List<Genre> genres) {
@@ -64,5 +73,9 @@ public class FilmService {
 
     public Collection<Film> getSearchFilmsByDirector(String query) {
         return filmStorage.getSearchFilmsByDirector(query);
+    }
+
+    public Collection<Film> getCommonFilms(int userId, int friendId) {
+        return filmStorage.getCommonFilms(userId, friendId);
     }
 }

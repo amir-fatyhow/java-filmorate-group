@@ -73,11 +73,20 @@ public class FilmController {
     }
 
     /**
-     * Получаем Film по популярности(количеству like)
+     * Получаем Film по популярности(количеству like) по жанру и годам
      */
     @GetMapping("/popular")
-    public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "0") int count) {
-        return ResponseEntity.ok(filmService.getPopularFilms(count));
+    public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "0") int count
+            ,@RequestParam(defaultValue = "0") int genreId, @RequestParam(required = false) String year) {
+       return ResponseEntity.ok(filmService.getPopularFilms(count, genreId, year));
+    }
+
+    /**
+     * Вывод общих с другом фильмов с сортировкой по их популярности
+     * */
+    @GetMapping("/common")
+    public Collection<Film> getCommonFilms(@RequestParam int userId, @RequestParam int friendId) {
+        return filmService.getCommonFilms(userId, friendId);
     }
 
     /**

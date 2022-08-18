@@ -163,8 +163,8 @@ public class FilmDbStorage implements FilmStorage {
                 "ORDER BY COUNT(USER_ID) DESC";
         String firstBoundOfDate = Integer.parseInt(year) - 1 + "-12-31";
         String secondBoundOfDate = Integer.parseInt(year) + 1 + "-01-01";
-        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage
-                , likesDbStorage, directorDbStorage), 10, firstBoundOfDate, secondBoundOfDate);
+        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage,
+                directorDbStorage), 10, firstBoundOfDate, secondBoundOfDate);
 
     }
 
@@ -180,11 +180,11 @@ public class FilmDbStorage implements FilmStorage {
         String firstBoundOfDate = Integer.parseInt(year) - 1 + "-12-31";
         String secondBoundOfDate = Integer.parseInt(year) + 1 + "-01-01";
         if (count != 0) {
-            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage
-                    , likesDbStorage, directorDbStorage), count, firstBoundOfDate, secondBoundOfDate, genreId);
+            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
+                    likesDbStorage, directorDbStorage), count, firstBoundOfDate, secondBoundOfDate, genreId);
         } else {
-            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage
-                    , likesDbStorage, directorDbStorage), 10, firstBoundOfDate, secondBoundOfDate, genreId);
+            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
+                    likesDbStorage, directorDbStorage), 10, firstBoundOfDate, secondBoundOfDate, genreId);
         }
     }
 
@@ -196,8 +196,8 @@ public class FilmDbStorage implements FilmStorage {
                 "GROUP BY F.ID, " +
                 "L.USER_ID ORDER BY COUNT(USER_ID) DESC LIMIT ?";
 
-        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage
-                , likesDbStorage, directorDbStorage),  friendId, userId, 10);
+        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
+                likesDbStorage, directorDbStorage),  friendId, userId, 10);
     }
 
     public void setFilmGenres(long filmId, List<Genre> genres) throws FilmNotFound {
@@ -256,7 +256,8 @@ public class FilmDbStorage implements FilmStorage {
                         "LEFT JOIN LIKES l ON FILMS.ID = l.FILM_ID " +
                         "GROUP BY FILMS.ID " +
                         "ORDER BY COUNT(USER_ID) DESC";
-                return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), directorId);
+                return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
+                        likesDbStorage, directorDbStorage), directorId);
             }
         } catch (EmptyResultDataAccessException e) {
             throw new DirectorNotFound("");
@@ -272,8 +273,8 @@ public class FilmDbStorage implements FilmStorage {
                 " LEFT JOIN LIKES AS L ON L.FILM_ID = F.ID LEFT JOIN MPA AS M ON M.ID = F.MPA_ID WHERE " +
                 "F.NAME ~* ? OR D.NAME ~* ? GROUP BY F.ID ORDER BY COUNT(USER_ID) ";
 
-        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle
-                , new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query, query);
+        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle,
+                new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query, query);
 
         Comparator<Film> filmComparator = Comparator.comparing(Film::getRate).reversed();
         films.sort(filmComparator);
@@ -288,8 +289,8 @@ public class FilmDbStorage implements FilmStorage {
                 " LEFT JOIN LIKES AS L ON L.FILM_ID = F.ID LEFT JOIN MPA AS M ON M.ID = F.MPA_ID WHERE " +
                 "F.NAME ~* ? GROUP BY F.ID ORDER BY COUNT(USER_ID) ";
 
-        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle
-                , new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query);
+        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle,
+                new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query);
 
         Comparator<Film> filmComparator = Comparator.comparing(Film::getRate).reversed();
         films.sort(filmComparator);
@@ -304,8 +305,8 @@ public class FilmDbStorage implements FilmStorage {
                 " LEFT JOIN LIKES AS L ON L.FILM_ID = F.ID LEFT JOIN MPA AS M ON M.ID = F.MPA_ID WHERE " +
                 " D.NAME ~* ? GROUP BY F.ID ORDER BY COUNT(USER_ID) ";
 
-        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle
-                , new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query);
+        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle,
+                new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query);
 
         Comparator<Film> filmComparator = Comparator.comparing(Film::getRate).reversed();
         films.sort(filmComparator);

@@ -80,7 +80,8 @@ public class FilmDbStorage implements FilmStorage {
             String sql = "SELECT * FROM FILMS " +
                     "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
                     "WHERE FILMS.ID = ?";
-            return jdbcTemplate.queryForObject(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), id);
+            return jdbcTemplate.queryForObject(sql, new FilmRowMapper(genreDbStorage,
+                    mpaDbStorage, likesDbStorage, directorDbStorage), id);
         } catch (EmptyResultDataAccessException e) {
             throw new FilmNotFound("");
         }
@@ -135,7 +136,8 @@ public class FilmDbStorage implements FilmStorage {
                 "L.USER_ID " +
                 "ORDER BY COUNT(USER_ID) DESC";
         if (count != 0) {
-            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), count);
+            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
+                    likesDbStorage, directorDbStorage), count);
         } else {
             return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), 10);
         }

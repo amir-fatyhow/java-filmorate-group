@@ -41,4 +41,13 @@ public class LikesDbStorage implements LikesStorage {
         return likes;
     }
 
+    public Integer getUsefulCount(long reviewId) {
+        String sqlLike = "SELECT COUNT(*) FROM REVIEW_LIKES WHERE REVIEW_ID = ? AND ISLIKE = ?";
+        Integer likes = jdbcTemplate.queryForObject(sqlLike, Integer.class, reviewId, true);
+
+        String sqlDislike = "SELECT COUNT(*) FROM REVIEW_LIKES WHERE REVIEW_ID = ? AND ISLIKE = ?";
+        Integer dislikes = jdbcTemplate.queryForObject(sqlDislike, Integer.class, reviewId, false);
+        return likes - dislikes;
+    }
+
 }

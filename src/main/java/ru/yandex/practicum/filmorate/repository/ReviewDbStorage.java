@@ -8,11 +8,14 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.enums.EventType;
+import ru.yandex.practicum.filmorate.enums.Operation;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
 import ru.yandex.practicum.filmorate.exeption.ReviewNotFound;
 import ru.yandex.practicum.filmorate.exeption.UserNotFound;
 import ru.yandex.practicum.filmorate.mapper.ReviewRowMapper;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
 import java.sql.PreparedStatement;
@@ -25,6 +28,7 @@ public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
 
     private final LikesDbStorage likesDbStorage;
+    private final EventService eventService;
 
     public Review addReview(Review review) {
         review.setUseful(0);
@@ -58,6 +62,10 @@ public class ReviewDbStorage implements ReviewStorage {
 
             }, keyHolder);
             review.setReviewId(keyHolder.getKey().longValue());
+
+            String sqlReview = "SELECT * FROM REVIEWS WHERE REVIEW_ID = ? ";
+            Review review1 = jdbcTemplate.queryForObject(sqlReview, new ReviewRowMapper(likesDbStorage), review.getReviewId());
+            eventService.addEvent(review1.getUserId(), EventType.REVIEW, Operation.ADD, review.getReviewId());
         }
         return review;
     }
@@ -68,6 +76,10 @@ public class ReviewDbStorage implements ReviewStorage {
                 "ISPOSITIVE = ?" +
                 "WHERE REVIEW_ID = ? ";
         jdbcTemplate.update(sql,review.getContent(), review.getIsPositive(), review.getReviewId());
+
+        String sqlReview = "SELECT * FROM REVIEWS WHERE REVIEW_ID = ? ";
+        Review review1 = jdbcTemplate.queryForObject(sqlReview, new ReviewRowMapper(likesDbStorage), review.getReviewId());
+        eventService.addEvent(review1.getUserId(), EventType.REVIEW, Operation.UPDATE, review.getReviewId());
         return review;
     }
 
@@ -128,6 +140,10 @@ public class ReviewDbStorage implements ReviewStorage {
 
     public void deleteReviewById(int reviewId) {
         try {
+            String sqlReview = "SELECT * FROM REVIEWS WHERE REVIEW_ID = ? ";
+            Review review1 = jdbcTemplate.queryForObject(sqlReview, new ReviewRowMapper(likesDbStorage), reviewId);
+            eventService.addEvent(review1.getUserId(), EventType.REVIEW, Operation.REMOVE, reviewId);
+
             String sql = "DELETE FROM REVIEWS WHERE REVIEW_ID = ?";
             String sqlLike = "DELETE FROM REVIEW_LIKES WHERE REVIEW_ID = ?";
             jdbcTemplate.update(sqlLike, reviewId);
@@ -143,7 +159,6 @@ public class ReviewDbStorage implements ReviewStorage {
         return jdbcTemplate.query(sql, new ReviewRowMapper(likesDbStorage));
     }
 
-    @Override
     public Collection<Review> getReviewsByFilmId(int filmId) {
         String sql = "SELECT * FROM REVIEWS WHERE FILM_ID = ?";
         return jdbcTemplate.query(sql, new ReviewRowMapper(likesDbStorage), filmId);

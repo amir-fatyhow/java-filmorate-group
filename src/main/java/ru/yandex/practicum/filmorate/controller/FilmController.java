@@ -122,7 +122,7 @@ public class FilmController {
      */
     @DeleteMapping("/{filmId}/like/{userId}")
     public ResponseEntity<String> deleteLikeFromFilm(@PathVariable long filmId, @PathVariable long userId) throws UserNotFound, FilmNotFound {
-        eventService.addEvent(userId, EventType.LIKE, Operation.REMOVE, filmId);
+        /*eventService.addEvent(userId, EventType.LIKE, Operation.REMOVE, filmId);*/
         likesService.deleteLikeFromFilm(filmId, userId);
         return ResponseEntity.ok("Like delete");
     }

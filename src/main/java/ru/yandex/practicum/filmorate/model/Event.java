@@ -4,6 +4,7 @@ import lombok.*;
 import ru.yandex.practicum.filmorate.enums.EventType;
 import ru.yandex.practicum.filmorate.enums.Operation;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 public class Event {
 
     private long eventId;
-    private LocalDateTime localDateTime;
+    private Long timestamp;
     private long userId;
     private EventType eventType;
     private Operation operation;

@@ -38,7 +38,7 @@ public class EventDbStorage implements EventStorage {
     @Override
     public List<Event> getAllEvents(long id) throws UserNotFound {
         try {
-            String sql = "SELECT * FROM EVENTS WHERE USER_ID = ? ORDER BY EVENT_DATE DESC";
+            String sql = "SELECT * FROM EVENTS WHERE USER_ID = ? ORDER BY EVENT_DATE";
             return jdbcTemplate.query(sql, new EventRowMapper(), id);
         } catch (RuntimeException e) {
             throw new UserNotFound("");

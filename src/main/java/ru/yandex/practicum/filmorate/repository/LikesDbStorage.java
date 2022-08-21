@@ -6,8 +6,11 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.enums.EventType;
+import ru.yandex.practicum.filmorate.enums.Operation;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
 import ru.yandex.practicum.filmorate.exeption.UserNotFound;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.storage.LikesStorage;
 
 @Repository
@@ -16,6 +19,8 @@ import ru.yandex.practicum.filmorate.storage.LikesStorage;
 public class LikesDbStorage implements LikesStorage {
 
     public final JdbcTemplate jdbcTemplate;
+
+    private final EventService eventService;
 
     public void addLike(long userId, long filmId) throws UserNotFound, FilmNotFound {
         try {

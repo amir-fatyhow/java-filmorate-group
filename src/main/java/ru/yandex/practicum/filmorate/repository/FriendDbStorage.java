@@ -22,6 +22,7 @@ public class FriendDbStorage implements FriendStorage {
     private final JdbcTemplate jdbcTemplate;
     private final UserService userService;
 
+    @Override
     public void addFriend(long userId, long friendId) throws UserNotFound {
         userService.getUserById(userId);
         userService.getUserById(friendId);
@@ -29,6 +30,7 @@ public class FriendDbStorage implements FriendStorage {
         jdbcTemplate.update(sql, userId, friendId, Boolean.TRUE);
     }
 
+    @Override
     public void deleteFriend(long userId, long friendId) throws UserNotFound {
         userService.getUserById(userId);
         userService.getUserById(friendId);
@@ -37,6 +39,7 @@ public class FriendDbStorage implements FriendStorage {
         jdbcTemplate.update(sql, friendId, userId);
     }
 
+    @Override
     public List<User> getAllFriends(long id) throws UserNotFound {
         userService.getUserById(id);
         String sqlFriend = "SELECT * FROM USERS " +
@@ -45,6 +48,7 @@ public class FriendDbStorage implements FriendStorage {
         return jdbcTemplate.query(sqlFriend, new UserRowMapper(), id);
     }
 
+    @Override
     public List<User> getAllCommonFriends(long userId, long otherUserId) throws UserNotFound {
         userService.getUserById(userId);
         userService.getUserById(otherUserId);

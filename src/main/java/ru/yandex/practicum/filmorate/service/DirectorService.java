@@ -16,7 +16,7 @@ public class DirectorService {
 
     private DirectorStorage directorStorage;
 
-    public Director addDirector(Director director) throws DirectorNotFound {
+    public Director addDirector(Director director) {
         return directorStorage.addDirector(director);
     }
 
@@ -32,7 +32,7 @@ public class DirectorService {
         return directorStorage.updateDirector(director);
     }
 
-    public void deleteDirectorById(int id) throws DirectorNotFound {
+    public void deleteDirectorById(int id) {
         directorStorage.deleteDirectorById(id);
     }
 

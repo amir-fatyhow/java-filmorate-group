@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "eventId") // Объект определяется только по полю eventId
 public class Event {
 
     private long eventId;

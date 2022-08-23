@@ -30,6 +30,7 @@ public class ReviewDbStorage implements ReviewStorage {
     private final LikesDbStorage likesDbStorage;
     private final EventService eventService;
 
+    @Override
     public Review addReview(Review review) {
         review.setUseful(0);
         SqlRowSet isExistFilm = jdbcTemplate.queryForRowSet("SELECT * FROM FILMS WHERE ID = ?", review.getFilmId());
@@ -64,12 +65,14 @@ public class ReviewDbStorage implements ReviewStorage {
             review.setReviewId(keyHolder.getKey().longValue());
 
             String sqlReview = "SELECT * FROM REVIEWS WHERE REVIEW_ID = ? ";
-            Review review1 = jdbcTemplate.queryForObject(sqlReview, new ReviewRowMapper(likesDbStorage), review.getReviewId());
+            Review review1 = jdbcTemplate.queryForObject(sqlReview, new ReviewRowMapper(likesDbStorage),
+                                                                    review.getReviewId());
             eventService.addEvent(review1.getUserId(), EventType.REVIEW, Operation.ADD, review.getReviewId());
         }
         return review;
     }
 
+    @Override
     public Review updateReview(Review review) {
         String sql = "UPDATE REVIEWS SET " +
                 "CONTENT = ?, " +
@@ -83,13 +86,16 @@ public class ReviewDbStorage implements ReviewStorage {
         return review;
     }
 
+    @Override
     public void putReviewLike(int reviewId, int userId) {
-        SqlRowSet isUserPutDislike = jdbcTemplate.queryForRowSet("SELECT * FROM REVIEW_LIKES " +
-                "WHERE REVIEW_ID = ? AND USER_ID = ? AND ISLIKE = ?", reviewId, userId, false);
         SqlRowSet isUserPutLike = jdbcTemplate.queryForRowSet("SELECT * FROM REVIEW_LIKES " +
                 "WHERE REVIEW_ID = ? AND USER_ID = ? AND ISLIKE = ?", reviewId, userId, true);
 
-        if (!isUserPutLike.next() && !isUserPutDislike.next()) {
+        if (!isUserPutLike.next()) {
+            String sqlDislikeDeleteIfExist = "DELETE FROM REVIEW_LIKES WHERE REVIEW_ID = ? " +
+                    "AND USER_ID = ? AND ISLIKE = ?";
+            jdbcTemplate.update(sqlDislikeDeleteIfExist, reviewId, userId, false);
+
             String sql = "INSERT INTO REVIEW_LIKES (" +
                     "REVIEW_ID, " +
                     "USER_ID, " +
@@ -100,13 +106,16 @@ public class ReviewDbStorage implements ReviewStorage {
         }
     }
 
+    @Override
     public void putReviewDislike(int reviewId, int userId) {
         SqlRowSet isUserPutDislike = jdbcTemplate.queryForRowSet("SELECT * FROM REVIEW_LIKES " +
                 "WHERE REVIEW_ID = ? AND USER_ID = ? AND ISLIKE = ?", reviewId, userId, false);
-        SqlRowSet isUserPutLike = jdbcTemplate.queryForRowSet("SELECT * FROM REVIEW_LIKES " +
-                "WHERE REVIEW_ID = ? AND USER_ID = ? AND ISLIKE = ?", reviewId, userId, true);
 
-        if (!isUserPutLike.next() && !isUserPutDislike.next()) {
+        if (!isUserPutDislike.next()) {
+            String sqlLikeDeleteIfExist = "DELETE FROM REVIEW_LIKES WHERE REVIEW_ID = ? " +
+                    "AND USER_ID = ? AND ISLIKE = ?";
+            jdbcTemplate.update(sqlLikeDeleteIfExist, reviewId, userId, true);
+
             String sql = "INSERT INTO REVIEW_LIKES (" +
                     "REVIEW_ID, " +
                     "USER_ID, " +
@@ -117,18 +126,21 @@ public class ReviewDbStorage implements ReviewStorage {
         }
     }
 
+    @Override
     public void deleteReviewLike(int reviewId, int userId) {
         String deleteLike = "DELETE FROM REVIEW_LIKES WHERE REVIEW_ID = ? AND " +
                 "USER_ID = ? AND ISLIKE = ?";
         jdbcTemplate.update(deleteLike, reviewId, userId, true);
     }
 
+    @Override
     public void deleteReviewDislike(int reviewId, int userId) {
         String deleteDislike = "DELETE FROM REVIEW_LIKES WHERE REVIEW_ID = ? AND " +
                 "USER_ID = ? AND ISLIKE = ?";
         jdbcTemplate.update(deleteDislike, reviewId, userId, true);
     }
 
+    @Override
     public Review getReviewById(int reviewId) {
         try {
             String sql = "SELECT * FROM REVIEWS WHERE REVIEW_ID = ? ";
@@ -138,6 +150,7 @@ public class ReviewDbStorage implements ReviewStorage {
         }
     }
 
+    @Override
     public void deleteReviewById(int reviewId) {
         try {
             String sqlReview = "SELECT * FROM REVIEWS WHERE REVIEW_ID = ? ";
@@ -153,12 +166,13 @@ public class ReviewDbStorage implements ReviewStorage {
         }
     }
 
-
+    @Override
     public Collection<Review> getReviews() {
         String sql = "SELECT * FROM REVIEWS";
         return jdbcTemplate.query(sql, new ReviewRowMapper(likesDbStorage));
     }
 
+    @Override
     public Collection<Review> getReviewsByFilmId(int filmId) {
         String sql = "SELECT * FROM REVIEWS WHERE FILM_ID = ?";
         return jdbcTemplate.query(sql, new ReviewRowMapper(likesDbStorage), filmId);

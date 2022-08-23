@@ -5,16 +5,16 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @Data
 @ToString
-@EqualsAndHashCode(of = "ReviewId")
+@EqualsAndHashCode(of = "reviewId") // Объект определяется только по полю reviewId
 public class Review {
-    private long ReviewId;
+
+    private long reviewId;
     @NotBlank
     @NotNull
     private String content;
@@ -23,4 +23,5 @@ public class Review {
     private int userId;
     private int filmId;
     private int useful;
+
 }

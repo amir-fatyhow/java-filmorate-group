@@ -52,13 +52,18 @@ public class ReviewService {
 
     public Collection<Review> getReviews(int filmId, int count) {
         if (filmId == 0 && count == 0) {
-            return reviewStorage.getReviews().stream().sorted(Comparator.comparing(Review::getUseful).reversed()).collect(Collectors.toList());
+            return reviewStorage.getReviews().stream().sorted(Comparator.comparing(Review::getUseful).reversed())
+                    .collect(Collectors.toList());
         } else if (filmId == 0 && count != 0) {
-            return reviewStorage.getReviews().stream().sorted(Comparator.comparing(Review::getUseful).reversed()).limit(count).collect(Collectors.toList());
+            return reviewStorage.getReviews().stream().sorted(Comparator.comparing(Review::getUseful).reversed())
+                    .limit(count).collect(Collectors.toList());
         } else if (filmId != 0 && count == 0) {
-            return reviewStorage.getReviewsByFilmId(filmId).stream().sorted(Comparator.comparing(Review::getUseful).reversed()).limit(10).collect(Collectors.toCollection(ArrayList::new));
+            return reviewStorage.getReviewsByFilmId(filmId).stream().sorted(Comparator.comparing(Review::getUseful)
+                    .reversed()).limit(10).collect(Collectors.toCollection(ArrayList::new));
         } else {
-            return reviewStorage.getReviewsByFilmId(filmId).stream().sorted(Comparator.comparing(Review::getUseful).reversed()).limit(count).collect(Collectors.toCollection(ArrayList::new));
+            return reviewStorage.getReviewsByFilmId(filmId).stream().sorted(Comparator.comparing(Review::getUseful)
+                    .reversed()).limit(count).collect(Collectors.toCollection(ArrayList::new));
         }
     }
+
 }

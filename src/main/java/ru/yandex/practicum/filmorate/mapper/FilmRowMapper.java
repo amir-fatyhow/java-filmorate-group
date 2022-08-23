@@ -26,9 +26,6 @@ public class FilmRowMapper implements RowMapper<Film> {
     private final LikesDbStorage likesDbStorage;
     private final DirectorDbStorage directorDbStorage;
 
-    /**
-     * Получаем Film из строки базы данных
-     */
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
         Film film = new Film();
@@ -46,4 +43,5 @@ public class FilmRowMapper implements RowMapper<Film> {
         film.setDirectors(directorDbStorage.getDirectorsByFilmId(film.getId()));
         return film;
     }
+
 }

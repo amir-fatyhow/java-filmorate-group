@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
@@ -18,7 +19,7 @@ public interface FilmStorage {
 
     Film getFilmById(long id) throws FilmNotFound;
 
-    Film updateFilm(Film film) throws FilmNotFound;
+    Film updateFilm(Film film);
 
     void deleteFilm(long filmId) throws FilmNotFound;
 
@@ -38,9 +39,12 @@ public interface FilmStorage {
 
     List<Film> getPopularByGenre(int genreId);
 
-    List<Film> getPopularFilmsByYear(String year);
+    List<Film> getPopularFilmsByYear(int year);
 
-    List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year);
+    List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, int year);
 
     Collection<Film> getCommonFilms(int userId, int friendId);
+
+    void setFilmDirectors(long filmId, List<Director> directors);
+
 }

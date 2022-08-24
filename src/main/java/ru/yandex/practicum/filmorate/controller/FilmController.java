@@ -67,18 +67,8 @@ public class FilmController {
      * Получаем Film по популярности(количеству like) по жанру и годам
      */
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "0") int count,
-                                      @RequestParam(defaultValue = "0") int genreId,
-                                      @RequestParam(required = false) String year) {
-        return filmService.getPopularFilms(count, genreId, year);
-    }
-
-    /**
-     * Вывод общих с другом фильмов с сортировкой по их популярности
-     */
-    @GetMapping("/common")
-    public List<Film> getCommonFilms(@RequestParam int userId, @RequestParam int friendId) {
-        return filmService.getCommonFilms(userId, friendId);
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "0") int count) {
+        return filmService.getPopularFilms(count);
     }
 
     /**
@@ -120,6 +110,14 @@ public class FilmController {
     @GetMapping("/director/{directorId}")
     public List<Film> getAllFilmsByDirectorSortByYearOrLikes(@PathVariable int directorId, @RequestParam String sortBy) {
         return filmService.getAllFilmsByDirector(directorId, sortBy);
+    }
+
+    /**
+     * Поиск Film по названию и режиссёру
+     * */
+    @GetMapping("/search")
+    public List<Film> getSearchFilms(@RequestParam String query, @RequestParam(required = false) String by) {
+        return filmService.getSearchFilms(query, by);
     }
 
 }

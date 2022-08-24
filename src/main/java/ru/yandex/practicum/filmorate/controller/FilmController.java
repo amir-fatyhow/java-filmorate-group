@@ -74,6 +74,14 @@ public class FilmController {
     }
 
     /**
+     * Вывод общих с другом фильмов с сортировкой по их популярности
+     */
+    @GetMapping("/common")
+    public List<Film> getCommonFilms(@RequestParam int userId, @RequestParam int friendId) {
+        return filmService.getCommonFilms(userId, friendId);
+    }
+
+    /**
      * Добавляем Genre в Film
      */
     @PostMapping("{id}/genres/set/")

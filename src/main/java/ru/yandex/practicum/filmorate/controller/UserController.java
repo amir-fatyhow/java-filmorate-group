@@ -27,6 +27,8 @@ public class UserController {
     private final FriendService friendService;
     private final EventService eventService;
 
+    private final FilmService filmService;
+
 
     /**
      * Добавляем нового User
@@ -110,6 +112,14 @@ public class UserController {
     @GetMapping("/{id}/feed")
     public List<Event> getAllEvents(@PathVariable long id) {
         return eventService.getAllEvents(id);
+    }
+
+    /**
+     * Возвращаем рекомендации по фильмам для просмотра
+     */
+    @GetMapping("/{userId}/recommendations")
+    public List<Film> getRecommendations(@PathVariable long userId) {
+        return filmService.getRecommendations(userId);
     }
 
 }

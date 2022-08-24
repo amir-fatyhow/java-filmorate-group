@@ -68,7 +68,7 @@ public class FilmController {
      */
     @GetMapping("/popular")
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "0") int count) {
-       return filmService.getPopularFilms(count);
+        return filmService.getPopularFilms(count);
     }
 
     /**
@@ -110,6 +110,14 @@ public class FilmController {
     @GetMapping("/director/{directorId}")
     public List<Film> getAllFilmsByDirectorSortByYearOrLikes(@PathVariable int directorId, @RequestParam String sortBy) {
         return filmService.getAllFilmsByDirector(directorId, sortBy);
+    }
+
+    /**
+     * Поиск Film по названию и режиссёру
+     * */
+    @GetMapping("/search")
+    public List<Film> getSearchFilms(@RequestParam String query, @RequestParam(required = false) String by) {
+        return filmService.getSearchFilms(query, by);
     }
 
 }

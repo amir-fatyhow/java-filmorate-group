@@ -23,6 +23,12 @@ public interface FilmStorage {
 
     List<Film> getPopularFilms(int count);
 
+    List<Film> getPopularByGenre(int genreId);
+
+    List<Film> getPopularFilmsByYear(String year);
+
+    List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year);
+
     void setFilmGenres(long filmId, List<Genre> genres);
 
     List<Genre> getFilmGenres(long filmId);

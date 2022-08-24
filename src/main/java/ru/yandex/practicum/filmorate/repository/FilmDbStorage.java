@@ -142,6 +142,53 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
+    public List<Film> getPopularByGenre(int genreId) {
+        String sql = "SELECT TOP ? * FROM FILMS " +
+                "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
+                "LEFT JOIN LIKES L ON FILMS.ID = L.FILM_ID LEFT JOIN FILMS_GENRES AS FG ON FILMS.ID = FG.FILM_ID " +
+                "WHERE FG.GENRE_ID = ? " +
+                "GROUP BY FILMS.ID, " +
+                "L.USER_ID " +
+                "ORDER BY COUNT(USER_ID) DESC";
+        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), 10, genreId);
+    }
+
+    @Override
+    public List<Film> getPopularFilmsByYear(String year) {
+        String sql = "SELECT TOP ? * FROM FILMS " +
+                "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
+                "LEFT JOIN LIKES L ON FILMS.ID = L.FILM_ID WHERE RELEASE_DATE >= ? AND RELEASE_DATE <= ? " +
+                "GROUP BY FILMS.ID, " +
+                "L.USER_ID " +
+                "ORDER BY COUNT(USER_ID) DESC";
+        String firstBoundOfDate = year + "-01-01";
+        String secondBoundOfDate = year + "-12-31";
+        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage),
+                10, firstBoundOfDate, secondBoundOfDate);
+
+    }
+
+    @Override
+    public List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year) {
+        String sql = "SELECT TOP ? * FROM FILMS " +
+                "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
+                "LEFT JOIN LIKES L ON FILMS.ID = L.FILM_ID LEFT JOIN FILMS_GENRES AS FG ON FILMS.ID = FG.FILM_ID " +
+                "WHERE (RELEASE_DATE >= ? AND RELEASE_DATE <= ?) AND FG.GENRE_ID = ?" +
+                "GROUP BY FILMS.ID, " +
+                "L.USER_ID " +
+                "ORDER BY COUNT(USER_ID) DESC";
+        String firstBoundOfDate = year + "-01-01";
+        String secondBoundOfDate = year + "-12-31";
+        if (count != 0) {
+            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
+                    likesDbStorage, directorDbStorage), count, firstBoundOfDate, secondBoundOfDate, genreId);
+        } else {
+            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
+                    likesDbStorage, directorDbStorage), 10, firstBoundOfDate, secondBoundOfDate, genreId);
+        }
+    }
+
+    @Override
     public void setFilmGenres(long filmId, List<Genre> genres) throws FilmNotFound {
         String sqlCheck = "SELECT COUNT(*) FROM FILMS_GENRES WHERE FILM_ID = ?";
         Integer check = jdbcTemplate.queryForObject(sqlCheck, Integer.class, filmId);

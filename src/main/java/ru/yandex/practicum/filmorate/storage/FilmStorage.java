@@ -31,4 +31,6 @@ public interface FilmStorage {
 
     void setFilmDirectors(long filmId, List<Director> directors);
 
+    List<Film> getRecommendations(long userId);
+
 }

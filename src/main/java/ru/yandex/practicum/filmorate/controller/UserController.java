@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeption.UserNotFound;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.FriendService;
@@ -96,6 +97,14 @@ public class UserController {
     @GetMapping("/{userId}/friends/common/{friendId}")
     public List<User> getAllCommonFriends(@PathVariable long userId, @PathVariable long friendId) throws UserNotFound {
         return friendService.getAllCommonFriends(userId, friendId);
+    }
+
+    /**
+     * Возвращаем рекомендации по фильмам для просмотра
+     */
+    @GetMapping("/{userId}/recommendations")
+    public List<Film> getRecommendations(@PathVariable long userId) {
+        return filmService.getRecommendations(userId);
     }
 
 }

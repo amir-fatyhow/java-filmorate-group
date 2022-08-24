@@ -67,10 +67,8 @@ public class FilmController {
      * Получаем Film по популярности(количеству like) по жанру и годам
      */
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "0") int count,
-                                      @RequestParam(defaultValue = "0") int genreId,
-                                      @RequestParam(required = false) String year) {
-        return filmService.getPopularFilms(count, genreId, year);
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "0") int count) {
+        return filmService.getPopularFilms(count);
     }
 
     /**

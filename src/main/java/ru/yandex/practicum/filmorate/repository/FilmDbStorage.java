@@ -142,63 +142,47 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getPopularByGenre(int genreId) {
-        String sql = "SELECT TOP ? * FROM FILMS " +
-                "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
-                "LEFT JOIN LIKES L ON FILMS.ID = L.FILM_ID LEFT JOIN FILMS_GENRES AS FG ON FILMS.ID = FG.FILM_ID " +
-                "WHERE FG.GENRE_ID = ? " +
-                "GROUP BY FILMS.ID, " +
-                "L.USER_ID " +
-                "ORDER BY COUNT(USER_ID) DESC";
-        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), 10, genreId);
+    public List<Film> getSearchFilmsByTittleAndDirector(String query) {
+        String searchFilmsByDirectorAndTittle = "SELECT * FROM FILMS AS F " +
+                "LEFT JOIN FILMS_DIRECTORS AS FD ON " +
+                "F.ID = FD.FILM_ID LEFT JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.ID " +
+                "LEFT JOIN LIKES AS L ON L.FILM_ID = F.ID LEFT JOIN MPA AS M ON M.ID = F.MPA_ID WHERE " +
+                "F.NAME ~* ? OR D.NAME ~* ? GROUP BY F.ID ORDER BY COUNT(USER_ID) DESC";
+
+        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle,
+                new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query, query);
+
+        return films;
     }
 
     @Override
-    public List<Film> getPopularFilmsByYear(String year) {
-        String sql = "SELECT TOP ? * FROM FILMS " +
-                "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
-                "LEFT JOIN LIKES L ON FILMS.ID = L.FILM_ID WHERE RELEASE_DATE >= ? AND RELEASE_DATE <= ? " +
-                "GROUP BY FILMS.ID, " +
-                "L.USER_ID " +
-                "ORDER BY COUNT(USER_ID) DESC";
-        String firstBoundOfDate = year + "-01-01";
-        String secondBoundOfDate = year + "-12-31";
-        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage),
-                10, firstBoundOfDate, secondBoundOfDate);
+    public List<Film> getSearchFilmsByTittle(String query) {
+        String searchFilmsByDirectorAndTittle = "SELECT * FROM FILMS AS F " +
+                "LEFT JOIN FILMS_DIRECTORS AS FD ON " +
+                "F.ID = FD.FILM_ID LEFT JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.ID " +
+                "LEFT JOIN LIKES AS L ON L.FILM_ID = F.ID LEFT JOIN MPA AS M ON M.ID = F.MPA_ID WHERE " +
+                "F.NAME ~* ? GROUP BY F.ID ORDER BY COUNT(USER_ID) DESC";
 
+        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle,
+                new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query);
+
+        return films;
     }
 
     @Override
-    public List<Film> getCommonFilms(int userId, int friendId) {
-        String sql = "SELECT * FROM FILMS AS F JOIN MPA ON F.MPA_ID=MPA.ID LEFT JOIN LIKES L " +
-                "ON F.ID = L.FILM_ID LEFT JOIN FILMS_GENRES AS FG ON F.ID = FG.FILM_ID WHERE L.USER_ID = ? " +
-                "AND F.ID IN (SELECT LIKES.FILM_ID FROM LIKES WHERE USER_ID = ?) " +
-                "GROUP BY F.ID, " +
-                "L.USER_ID ORDER BY COUNT(USER_ID) DESC LIMIT ?";
+    public List<Film> getSearchFilmsByDirector(String query) {
+        String searchFilmsByDirectorAndTittle = "SELECT * FROM FILMS AS F " +
+                "LEFT JOIN FILMS_DIRECTORS AS FD ON " +
+                "F.ID = FD.FILM_ID LEFT JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.ID " +
+                "LEFT JOIN LIKES AS L ON L.FILM_ID = F.ID LEFT JOIN MPA AS M ON M.ID = F.MPA_ID WHERE " +
+                " D.NAME ~* ? GROUP BY F.ID ORDER BY COUNT(USER_ID) DESC";
 
-        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
-                likesDbStorage, directorDbStorage),  friendId, userId, 10);
+        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle,
+                new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query);
+
+        return films;
     }
 
-    @Override
-    public List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year) {
-        String sql = "SELECT TOP ? * FROM FILMS " +
-                "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
-                "LEFT JOIN LIKES L ON FILMS.ID = L.FILM_ID LEFT JOIN FILMS_GENRES AS FG ON FILMS.ID = FG.FILM_ID " +
-                "WHERE (RELEASE_DATE >= ? AND RELEASE_DATE <= ?) AND FG.GENRE_ID = ?" +
-                "GROUP BY FILMS.ID, " +
-                "L.USER_ID " +
-                "ORDER BY COUNT(USER_ID) DESC";
-        String firstBoundOfDate = year + "-01-01";
-        String secondBoundOfDate = year + "-12-31";
-        if (count != 0) {
-            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
-                    likesDbStorage, directorDbStorage), count, firstBoundOfDate, secondBoundOfDate, genreId);
-        } else {
-            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
-                    likesDbStorage, directorDbStorage), 10, firstBoundOfDate, secondBoundOfDate, genreId);
-        }
-    }
 
     @Override
     public void setFilmGenres(long filmId, List<Genre> genres) throws FilmNotFound {

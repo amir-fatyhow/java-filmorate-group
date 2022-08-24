@@ -8,14 +8,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.enums.EventType;
-import ru.yandex.practicum.filmorate.enums.Operation;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
 import ru.yandex.practicum.filmorate.exeption.ReviewNotFound;
 import ru.yandex.practicum.filmorate.exeption.UserNotFound;
 import ru.yandex.practicum.filmorate.mapper.ReviewRowMapper;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
@@ -31,8 +28,6 @@ public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
     private final FilmService filmService;
     private final UserService userService;
-
-    private final EventService eventService;
 
     public Boolean isReviewExist(long reviewId) {
         String sql = "SELECT COUNT(*) FROM REVIEWS WHERE REVIEW_ID = ?";
@@ -60,7 +55,6 @@ public class ReviewDbStorage implements ReviewStorage {
             return ps;
         }, keyHolder);
         review.setReviewId(keyHolder.getKey().longValue());
-        eventService.addEvent(review.getUserId(), EventType.REVIEW, Operation.ADD, review.getReviewId());
         return review;
     }
 
@@ -76,8 +70,6 @@ public class ReviewDbStorage implements ReviewStorage {
                         review.getIsPositive(),
                         review.getContent(),
                         review.getReviewId());
-                eventService.addEvent( getReviewById(review.getReviewId()).getUserId(),
-                        EventType.REVIEW, Operation.UPDATE, review.getReviewId());
                 return review;
             } catch (EmptyResultDataAccessException e) {
                 throw new ReviewNotFound("Неверно указан id = " + review.getReviewId() + " отзыва");
@@ -89,9 +81,8 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public void deleteReview(long reviewId) throws ReviewNotFound {
-        Review review = getReviewById(reviewId);
+        getReviewById(reviewId);
         String sql = "DELETE FROM REVIEWS WHERE REVIEW_ID = ?";
-        eventService.addEvent(review.getUserId(), EventType.REVIEW, Operation.REMOVE, reviewId);
         jdbcTemplate.update(sql, reviewId);
     }
 

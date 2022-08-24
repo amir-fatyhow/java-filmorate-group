@@ -1,27 +1,29 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@NoArgsConstructor
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
+@EqualsAndHashCode(of = "reviewId") // Объект определяется только по полю id
 @ToString
-@EqualsAndHashCode(of = "reviewId") // Объект определяется только по полю reviewId
 public class Review {
 
     private long reviewId;
-    @NotBlank
+    private int useful;
+    @NotNull
+    private Boolean isPositive;
     @NotNull
     private String content;
     @NotNull
-    private Boolean isPositive;
-    private int userId;
-    private int filmId;
-    private int useful;
+    private Long userId;
+    @NotNull
+    private Long filmId;
 
 }

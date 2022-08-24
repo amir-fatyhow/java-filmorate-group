@@ -25,7 +25,7 @@ public class MpaDbStorage implements MpaStorage {
             String sql = "SELECT * FROM MPA WHERE ID = ?";
             return jdbcTemplate.queryForObject(sql, new MpaRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
-            throw new MpaNotFound("");
+            throw new MpaNotFound("Неверно указан id = " + id + " MPA");
         }
     }
 

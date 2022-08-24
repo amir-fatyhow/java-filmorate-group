@@ -19,7 +19,7 @@ public class FilmService {
 
     private final FilmStorage filmStorage;
 
-    public void addFilm(Film film) {
+    public void addFilm(Film film) throws FilmNotFound {
         filmStorage.addFilm(film);
     }
 
@@ -27,7 +27,7 @@ public class FilmService {
         return filmStorage.getAllFilms();
     }
 
-    public Film getFilmById(long filmId) {
+    public Film getFilmById(long filmId) throws FilmNotFound {
         return filmStorage.getFilmById(filmId);
     }
 
@@ -39,10 +39,10 @@ public class FilmService {
         filmStorage.deleteFilm(filmId);
     }
 
-    public List<Film> getPopularFilms(int count, int genreId, int year) {
-        if (genreId == 0 && year == 0) {
+    public List<Film> getPopularFilms(int count, int genreId, String year) {
+        if (genreId == 0 && year == null) {
             return filmStorage.getPopularFilms(count);
-        } else if (genreId != 0 && year == 0) {
+        } else if (genreId != 0 && year == null) {
             return filmStorage.getPopularByGenre(genreId);
         } else if (genreId == 0){
             return filmStorage.getPopularFilmsByYear(year);
@@ -63,11 +63,11 @@ public class FilmService {
         return filmStorage.getAllFilmsByDirector(directorId, sortBy);
     }
 
-    public Collection<Film> getCommonFilms(int userId, int friendId) {
+    public List<Film> getCommonFilms(int userId, int friendId) {
         return filmStorage.getCommonFilms(userId, friendId);
     }
 
-    public Collection<Film> getSearchFilms(String query,String by) {
+    public List<Film> getSearchFilms(String query,String by) {
         if (Objects.equals(by, "title,director") || Objects.equals(by, "director,title")) {
             return filmStorage.getSearchFilmsByTittleAndDirector(query);
         } else if ( Objects.equals(by, "title")) {

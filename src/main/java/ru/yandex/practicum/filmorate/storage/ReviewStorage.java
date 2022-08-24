@@ -1,29 +1,30 @@
 package ru.yandex.practicum.filmorate.storage;
-
-import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
+import ru.yandex.practicum.filmorate.exeption.ReviewNotFound;
+import ru.yandex.practicum.filmorate.exeption.UserNotFound;
 import ru.yandex.practicum.filmorate.model.Review;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
-@Repository
 public interface ReviewStorage {
+
     Review addReview(Review review);
 
-    Review updateReview(Review review);
+    Review updateReview(Review review) throws ReviewNotFound;
 
-    void putReviewLike(int reviewId, int userId);
+    void deleteReview(long reviewId) throws ReviewNotFound;
 
-    void putReviewDislike(int reviewId, int userId);
+    Review getReviewById(long reviewId) throws ReviewNotFound;
 
-    void deleteReviewLike(int reviewId, int userId);
+    List<Review> getAllReviewByFilmId(long filmId, int count) throws FilmNotFound;
 
-    void deleteReviewDislike(int reviewId, int userId);
+    Review addLikeReview(long reviewId, long userId) throws ReviewNotFound, UserNotFound;
 
-    Review getReviewById(int reviewId);
+    Review addDislikeReview(long reviewId, long userId) throws ReviewNotFound, UserNotFound;
 
-    void deleteReviewById(int reviewId);
+    void deleteLikeReview(long reviewId, long userId) throws ReviewNotFound, UserNotFound;
 
-    Collection<Review> getReviews();
+    void deleteDislikeReview(long reviewId, long userId) throws ReviewNotFound, UserNotFound;
 
-    Collection<Review> getReviewsByFilmId(int filmId);
 }

@@ -19,7 +19,7 @@ public interface FilmStorage {
 
     Film getFilmById(long id) throws FilmNotFound;
 
-    Film updateFilm(Film film);
+    Film updateFilm(Film film) throws FilmNotFound;
 
     void deleteFilm(long filmId) throws FilmNotFound;
 
@@ -31,19 +31,19 @@ public interface FilmStorage {
 
     List<Film> getAllFilmsByDirector(int directorId, String sortBy);
 
-    Collection<Film> getSearchFilmsByTittleAndDirector(String query);
+    List<Film> getSearchFilmsByTittleAndDirector(String query);
 
-    Collection<Film> getSearchFilmsByTittle(String query);
+    List<Film> getSearchFilmsByTittle(String query);
 
-    Collection<Film> getSearchFilmsByDirector(String query);
+    List<Film> getSearchFilmsByDirector(String query);
 
     List<Film> getPopularByGenre(int genreId);
 
-    List<Film> getPopularFilmsByYear(int year);
+    List<Film> getPopularFilmsByYear(String year);
 
-    List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, int year);
+    List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year);
 
-    Collection<Film> getCommonFilms(int userId, int friendId);
+    List<Film> getCommonFilms(int userId, int friendId);
 
     void setFilmDirectors(long filmId, List<Director> directors);
 

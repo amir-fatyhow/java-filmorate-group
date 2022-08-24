@@ -22,7 +22,7 @@ public class EventDbStorage implements EventStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void addEvent(long userId, EventType eventType, Operation operation, long entityId) {
+    public void addEvent(long userId, EventType eventType, Operation operation, long entityId) throws UserNotFound {
         String sql = "INSERT INTO EVENTS (EVENT_DATE, USER_ID, EVENT_TYPE, OPERATION, ENTITY_ID) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[] {"EVENT_ID"});
@@ -41,7 +41,7 @@ public class EventDbStorage implements EventStorage {
             String sql = "SELECT * FROM EVENTS WHERE USER_ID = ? ORDER BY EVENT_DATE";
             return jdbcTemplate.query(sql, new EventRowMapper(), id);
         } catch (RuntimeException e) {
-            throw new UserNotFound("Неверный id пользователя.");
+            throw new UserNotFound("Неверно указано событие с id = " + id);
         }
     }
 

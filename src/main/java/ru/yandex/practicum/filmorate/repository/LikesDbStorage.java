@@ -36,7 +36,7 @@ public class LikesDbStorage implements LikesStorage {
             String sql = "DELETE FROM LIKES WHERE FILM_ID = ? AND USER_ID = ?";
             jdbcTemplate.update(sql, filmId, userId);
         }catch (EmptyResultDataAccessException e) {
-            throw new FilmNotFound("");
+            throw new FilmNotFound("Неверно указан id = " + filmId + " фильма.");
         }
     }
 
@@ -47,14 +47,5 @@ public class LikesDbStorage implements LikesStorage {
         return likes;
     }
 
-    @Override
-    public Integer getUsefulCount(long reviewId) {
-        String sqlLike = "SELECT COUNT(*) FROM REVIEW_LIKES WHERE REVIEW_ID = ? AND ISLIKE = ?";
-        Integer likes = jdbcTemplate.queryForObject(sqlLike, Integer.class, reviewId, true);
-
-        String sqlDislike = "SELECT COUNT(*) FROM REVIEW_LIKES WHERE REVIEW_ID = ? AND ISLIKE = ?";
-        Integer dislikes = jdbcTemplate.queryForObject(sqlDislike, Integer.class, reviewId, false);
-        return likes - dislikes;
-    }
 
 }

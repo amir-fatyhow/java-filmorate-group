@@ -32,7 +32,7 @@ public class DirectorService {
         return directorStorage.updateDirector(director);
     }
 
-    public void deleteDirectorById(int id) {
+    public void deleteDirectorById(int id) throws DirectorNotFound {
         directorStorage.deleteDirectorById(id);
     }
 

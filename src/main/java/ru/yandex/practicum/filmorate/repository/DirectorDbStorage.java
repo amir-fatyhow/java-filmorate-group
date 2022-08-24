@@ -46,7 +46,7 @@ public class DirectorDbStorage implements DirectorStorage {
             String sql = "SELECT * FROM DIRECTORS D WHERE D.ID = ?";
             return jdbcTemplate.queryForObject(sql, new DirectorRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
-            throw new DirectorNotFound("Режиссер с Id = " + id + " не найден");
+            throw new DirectorNotFound("Неверно указан id = " + id + " режиссера.");
         }
     }
 
@@ -58,12 +58,12 @@ public class DirectorDbStorage implements DirectorStorage {
             jdbcTemplate.update(sql, director.getName(), director.getId());
             return director;
         } catch (EmptyResultDataAccessException e) {
-            throw new DirectorNotFound("Режиссер с Id = " + director.getId() + " не найден");
+            throw new DirectorNotFound("Неверно указан id = " + director.getId() + " режиссера.");
         }
     }
 
     @Override
-    public void deleteDirectorById(int id) {
+    public void deleteDirectorById(int id) throws DirectorNotFound {
         String sql = "DELETE FROM DIRECTORS WHERE ID = ?";
         jdbcTemplate.update(sql, id);
     }

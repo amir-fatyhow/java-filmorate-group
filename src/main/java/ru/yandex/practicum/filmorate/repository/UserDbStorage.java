@@ -70,7 +70,7 @@ public class UserDbStorage implements UserStorage {
             user.setFriends(userFriends);
             return user;
         } catch (EmptyResultDataAccessException e) {
-            throw new UserNotFound("");
+            throw new UserNotFound("Неверно указан id = " + id + " пользователя.");
         }
     }
 

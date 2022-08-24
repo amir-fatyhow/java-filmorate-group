@@ -43,6 +43,17 @@ public class FilmService {
             return filmStorage.getPopularFilms(count);
     }
 
+    public List<Film> getSearchFilms(String query,String by) {
+        if (Objects.equals(by, "title,director") || Objects.equals(by, "director,title")) {
+            return filmStorage.getSearchFilmsByTittleAndDirector(query);
+        } else if ( Objects.equals(by, "title")) {
+            return filmStorage.getSearchFilmsByTittle(query);
+        } else if (Objects.equals(by, "director")){
+            return filmStorage.getSearchFilmsByDirector(query);
+        }
+        return null;
+    }
+
     public void setFilmGenres(long filmId, List<Genre> genres) {
         filmStorage.setFilmGenres(filmId, genres);
     }
@@ -53,6 +64,10 @@ public class FilmService {
 
     public List<Film> getAllFilmsByDirector(int directorId, String sortBy) {
         return filmStorage.getAllFilmsByDirector(directorId, sortBy);
+    }
+
+    public List<Film> getRecommendations(long userId) {
+        return filmStorage.getRecommendations(userId);
     }
 
 }

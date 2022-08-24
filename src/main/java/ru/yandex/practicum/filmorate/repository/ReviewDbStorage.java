@@ -35,6 +35,7 @@ public class ReviewDbStorage implements ReviewStorage {
 
     private final EventService eventService;
 
+
     public Boolean isReviewExist(long reviewId) {
         String sql = "SELECT COUNT(*) FROM REVIEWS WHERE REVIEW_ID = ?";
         int check = jdbcTemplate.queryForObject(sql, Integer.class, reviewId);
@@ -62,6 +63,7 @@ public class ReviewDbStorage implements ReviewStorage {
         }, keyHolder);
         review.setReviewId(keyHolder.getKey().longValue());
         eventService.addEvent(review.getUserId(), EventType.REVIEW, Operation.ADD, review.getReviewId());
+
         return review;
     }
 
@@ -77,8 +79,10 @@ public class ReviewDbStorage implements ReviewStorage {
                         review.getIsPositive(),
                         review.getContent(),
                         review.getReviewId());
+
                 eventService.addEvent( getReviewById(review.getReviewId()).getUserId(),
                         EventType.REVIEW, Operation.UPDATE, review.getReviewId());
+
                 return review;
             } catch (EmptyResultDataAccessException e) {
                 throw new ReviewNotFound("Неверно указан id = " + review.getReviewId() + " отзыва");
@@ -93,6 +97,7 @@ public class ReviewDbStorage implements ReviewStorage {
         Review review = getReviewById(reviewId);
         String sql = "DELETE FROM REVIEWS WHERE REVIEW_ID = ?";
         eventService.addEvent(review.getUserId(), EventType.REVIEW, Operation.REMOVE, reviewId);
+        String sql = "DELETE FROM REVIEWS WHERE REVIEW_ID = ?";
         jdbcTemplate.update(sql, reviewId);
     }
 

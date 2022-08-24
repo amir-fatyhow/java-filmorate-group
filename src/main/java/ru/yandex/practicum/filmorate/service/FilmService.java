@@ -39,8 +39,16 @@ public class FilmService {
         filmStorage.deleteFilm(filmId);
     }
 
-    public List<Film> getPopularFilms(int count) {
+    public List<Film> getPopularFilms(int count, int genreId, String year) {
+        if (genreId == 0 && year == null) {
             return filmStorage.getPopularFilms(count);
+        } else if (genreId != 0 && year == null) {
+            return filmStorage.getPopularByGenre(genreId);
+        } else if (genreId == 0){
+            return filmStorage.getPopularFilmsByYear(year);
+        } else {
+            return filmStorage.getPopularFilmsByGenreAndYear(count, genreId, year);
+        }
     }
 
     public void setFilmGenres(long filmId, List<Genre> genres) {

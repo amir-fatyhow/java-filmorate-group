@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
 import ru.yandex.practicum.filmorate.exeption.UserNotFound;
-import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.storage.LikesStorage;
 
 @Repository
@@ -17,8 +16,6 @@ import ru.yandex.practicum.filmorate.storage.LikesStorage;
 public class LikesDbStorage implements LikesStorage {
 
     public final JdbcTemplate jdbcTemplate;
-
-    private final EventService eventService;
 
     @Override
     public void addLike(long userId, long filmId) throws UserNotFound, FilmNotFound {

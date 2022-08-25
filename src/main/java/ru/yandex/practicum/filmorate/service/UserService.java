@@ -36,5 +36,4 @@ public class UserService {
     public void deleteUser(long id) throws UserNotFound {
         userStorage.deleteUser(id);
     }
-
 }

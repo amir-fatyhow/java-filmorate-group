@@ -64,6 +64,14 @@ public class FilmController {
     }
 
     /**
+     * Выводим все Film от заданного Director по годам или лайкам
+     */
+    @GetMapping("/director/{directorId}")
+    public List<Film> getAllFilmsByDirectorSortByYearOrLikes(@PathVariable int directorId, @RequestParam String sortBy) {
+        return filmService.getAllFilmsByDirector(directorId, sortBy);
+    }
+
+    /**
      * Получаем Film по популярности(количеству like) по жанру и годам
      */
     @GetMapping("/popular")

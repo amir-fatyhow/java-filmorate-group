@@ -12,7 +12,8 @@ public class ErrorHandler {
     @ExceptionHandler({UserNotFound.class,
             FilmNotFound.class,
             MpaNotFound.class,
-            GenreNotFound.class})
+            GenreNotFound.class,
+            DirectorNotFound.class})
     public ResponseEntity<String> runtimeHandler(final RuntimeException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
     }

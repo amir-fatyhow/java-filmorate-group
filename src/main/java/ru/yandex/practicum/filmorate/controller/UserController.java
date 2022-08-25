@@ -55,6 +55,14 @@ public class UserController {
     }
 
     /**
+     * Удаляем User по id
+     */
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable long userId) throws UserNotFound {
+        userService.deleteUser(userId);
+    }
+
+    /**
      * Добавляем User в друзья к другому User
      */
     @PutMapping("/{id}/friends/{friendId}")

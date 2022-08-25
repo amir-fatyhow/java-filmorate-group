@@ -105,6 +105,20 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
+    public void deleteFilm(long filmId) throws FilmNotFound {
+        try {
+            String sql = "DELETE FROM FILMS WHERE ID = ?";
+            String sqlGenre = "DELETE FROM FILMS_GENRES WHERE FILM_ID = ?";
+            String sqlLike = "DELETE FROM LIKES WHERE FILM_ID = ?";
+            jdbcTemplate.update(sqlGenre, filmId);
+            jdbcTemplate.update(sqlLike, filmId);
+            jdbcTemplate.update(sql, filmId);
+        } catch (IllegalArgumentException e) {
+            throw new FilmNotFound("Неверно указан id = " + filmId + " фильма");
+        }
+    }
+
+    @Override
     public List<Film> getPopularFilms(int count) {
         String sql = "SELECT TOP ? * FROM FILMS " +
                 "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +

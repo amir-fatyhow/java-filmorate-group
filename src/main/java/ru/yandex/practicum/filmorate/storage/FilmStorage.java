@@ -18,6 +18,8 @@ public interface FilmStorage {
 
     Film updateFilm(Film film) throws FilmNotFound;
 
+    void deleteFilm(long filmId) throws FilmNotFound;
+
     List<Film> getPopularFilms(int count);
 
     void setFilmGenres(long filmId, List<Genre> genres);

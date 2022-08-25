@@ -35,6 +35,10 @@ public class FilmService {
         return filmStorage.updateFilm(film);
     }
 
+    public void deleteFilm(long filmId) throws FilmNotFound {
+        filmStorage.deleteFilm(filmId);
+    }
+
     public List<Film> getPopularFilms(int count) {
             return filmStorage.getPopularFilms(count);
     }

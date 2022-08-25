@@ -15,4 +15,6 @@ public interface UserStorage {
 
     User updateUser(User user) throws UserNotFound;
 
+    void deleteUser(long userId) throws UserNotFound;
+
 }

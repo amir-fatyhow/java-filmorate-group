@@ -56,6 +56,14 @@ public class FilmController {
     }
 
     /**
+     * Удаляем Film по id
+     */
+    @DeleteMapping("/{filmId}")
+    public void deleteFilm(@PathVariable long filmId) throws FilmNotFound {
+        filmService.deleteFilm(filmId);
+    }
+
+    /**
      * Получаем Film по популярности(количеству like) по жанру и годам
      */
     @GetMapping("/popular")

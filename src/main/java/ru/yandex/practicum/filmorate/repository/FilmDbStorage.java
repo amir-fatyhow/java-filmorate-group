@@ -269,4 +269,46 @@ public class FilmDbStorage implements FilmStorage {
         return null;
     }
 
+    @Override
+    public List<Film> getSearchFilmsByTittleAndDirector(String query) {
+        String searchFilmsByDirectorAndTittle = "SELECT * FROM FILMS AS F " +
+                "LEFT JOIN FILMS_DIRECTORS AS FD ON " +
+                "F.ID = FD.FILM_ID LEFT JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.ID " +
+                "LEFT JOIN LIKES AS L ON L.FILM_ID = F.ID LEFT JOIN MPA AS M ON M.ID = F.MPA_ID WHERE " +
+                "F.NAME ~* ? OR D.NAME ~* ? GROUP BY F.ID ORDER BY COUNT(USER_ID) DESC";
+
+        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle,
+                new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query, query);
+
+        return films;
+    }
+
+    @Override
+    public List<Film> getSearchFilmsByTittle(String query) {
+        String searchFilmsByDirectorAndTittle = "SELECT * FROM FILMS AS F " +
+                "LEFT JOIN FILMS_DIRECTORS AS FD ON " +
+                "F.ID = FD.FILM_ID LEFT JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.ID " +
+                "LEFT JOIN LIKES AS L ON L.FILM_ID = F.ID LEFT JOIN MPA AS M ON M.ID = F.MPA_ID WHERE " +
+                "F.NAME ~* ? GROUP BY F.ID ORDER BY COUNT(USER_ID) DESC";
+
+        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle,
+                new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query);
+
+        return films;
+    }
+
+    @Override
+    public List<Film> getSearchFilmsByDirector(String query) {
+        String searchFilmsByDirectorAndTittle = "SELECT * FROM FILMS AS F " +
+                "LEFT JOIN FILMS_DIRECTORS AS FD ON " +
+                "F.ID = FD.FILM_ID LEFT JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.ID " +
+                "LEFT JOIN LIKES AS L ON L.FILM_ID = F.ID LEFT JOIN MPA AS M ON M.ID = F.MPA_ID WHERE " +
+                " D.NAME ~* ? GROUP BY F.ID ORDER BY COUNT(USER_ID) DESC";
+
+        List<Film> films = jdbcTemplate.query(searchFilmsByDirectorAndTittle,
+                new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), query);
+
+        return films;
+    }
+
 }

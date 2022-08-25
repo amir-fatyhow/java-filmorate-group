@@ -122,4 +122,12 @@ public class FilmController {
         likesService.deleteLikeFromFilm(filmId, userId);
     }
 
+    /**
+     * Поиск Film по названию и режиссёру
+     * */
+    @GetMapping("/search")
+    public List<Film> getSearchFilms(@RequestParam String query, @RequestParam(required = false) String by) {
+        return filmService.getSearchFilms(query, by);
+    }
+
 }

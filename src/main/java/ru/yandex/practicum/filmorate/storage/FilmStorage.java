@@ -29,6 +29,12 @@ public interface FilmStorage {
 
     List<Film> getCommonFilms(int userId, int friendId);
 
+    List<Film> getSearchFilmsByTittleAndDirector(String query);
+
+    List<Film> getSearchFilmsByTittle(String query);
+
+    List<Film> getSearchFilmsByDirector(String query);
+
     void deleteFilm(long filmId) throws FilmNotFound;
     void setFilmGenres(long filmId, List<Genre> genres);
 

@@ -38,7 +38,6 @@ public class FilmService {
     public void deleteFilm(long filmId) throws FilmNotFound {
         filmStorage.deleteFilm(filmId);
     }
-
     public List<Film> getPopularFilms(int count) {
             return filmStorage.getPopularFilms(count);
     }
@@ -49,6 +48,10 @@ public class FilmService {
 
     public List<Genre> getFilmGenres(long filmId) {
         return filmStorage.getFilmGenres(filmId);
+    }
+
+    public List<Film> getAllFilmsByDirector(int directorId, String sortBy) {
+        return filmStorage.getAllFilmsByDirector(directorId, sortBy);
     }
 
 }

@@ -57,4 +57,5 @@ public class DirectorsController {
     public void deleteDirectorById(@PathVariable int id) throws DirectorNotFound {
         directorService.deleteDirectorById(id);
     }
+
 }

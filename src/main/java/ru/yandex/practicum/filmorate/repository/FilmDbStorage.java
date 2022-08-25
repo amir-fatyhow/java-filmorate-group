@@ -31,8 +31,8 @@ public class FilmDbStorage implements FilmStorage {
     private final GenreDbStorage genreDbStorage;
     private final MpaDbStorage mpaDbStorage;
     private final LikesDbStorage likesDbStorage;
-
     private final DirectorDbStorage directorDbStorage;
+
     @Override
     public Film addFilm(Film film) throws FilmNotFound {
         film.setRate(0);
@@ -88,6 +88,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film updateFilm(Film film) throws FilmNotFound {
         film.setGenres(film.getGenres().stream().distinct().collect(Collectors.toList()));
+        film.setDirectors(film.getDirectors().stream().distinct().collect(Collectors.toList()));
         getFilmById(film.getId());
         String sql = "UPDATE FILMS SET " +
                 "NAME = ?, " +
@@ -113,10 +114,12 @@ public class FilmDbStorage implements FilmStorage {
     public void deleteFilm(long filmId) throws FilmNotFound {
         try {
             String sql = "DELETE FROM FILMS WHERE ID = ?";
+            String sqlDirector = "DELETE FROM FILMS_DIRECTORS WHERE FILM_ID = ?";
             String sqlGenre = "DELETE FROM FILMS_GENRES WHERE FILM_ID = ?";
             String sqlLike = "DELETE FROM LIKES WHERE FILM_ID = ?";
             jdbcTemplate.update(sqlGenre, filmId);
             jdbcTemplate.update(sqlLike, filmId);
+            jdbcTemplate.update(sqlDirector, filmId);
             jdbcTemplate.update(sql, filmId);
         } catch (IllegalArgumentException e) {
             throw new FilmNotFound("Неверно указан id = " + filmId + " фильма");
@@ -135,8 +138,7 @@ public class FilmDbStorage implements FilmStorage {
             return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
                     likesDbStorage, directorDbStorage), count);
         } else {
-            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage,
-                    directorDbStorage), 10);
+            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), 10);
         }
     }
 

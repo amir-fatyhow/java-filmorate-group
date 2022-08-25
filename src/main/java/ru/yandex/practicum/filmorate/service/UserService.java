@@ -32,5 +32,4 @@ public class UserService {
     public User updateUser(User user) throws UserNotFound {
         return userStorage.updateUser(user);
     }
-
 }
